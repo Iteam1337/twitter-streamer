@@ -1,0 +1,43 @@
+elasticsearch:
+  image: 'alexanderczigler/elasticsearch:latest'
+  ports:
+    - '9557:9200'
+  restart: always
+faceproxy:
+  image: 'tutum.co/iteamdev/aspnet-faceproxy:latest'
+  autoredeploy: true
+  ports:
+    - '5004:5004'
+  restart: always
+kibana:
+  image: 'arcus/kibana:latest'
+  environment:
+    - ES_HOST=elasticsearch
+    - ES_PORT=9557
+  ports:
+    - '8090:80'
+  tags:
+    - digitalocean
+react:
+  image: 'tutum.co/iteamdev/devsum-react:latest'
+  autoredeploy: true
+  ports:
+    - '80:80'
+worker:
+  image: 'tutum.co/iteamdev/devsum-twitter-worker:latest'
+  autoredeploy: true
+  environment:
+    - 'api__url=http://faceproxy:5004/face'
+    - 'elasticsearch__host=http://elasticsearch:9200'
+    - hashtag=svpol
+    - twitter__access_token=XXXX
+    - twitter__access_token_secret=ZZZ
+    - twitter__consumer_key=KKK
+    - twitter__consumer_secret=PPPP
+  links:
+    - elasticsearch
+    - faceproxy
+  ports:
+    - '3000:3000'
+  restart: always
+
