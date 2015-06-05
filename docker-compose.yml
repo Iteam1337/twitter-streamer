@@ -5,7 +5,6 @@ elasticsearch:
   restart: always
 faceproxy:
   image: 'tutum.co/iteamdev/aspnet-faceproxy:latest'
-  autoredeploy: true
   ports:
     - '5004:5004'
   restart: always
@@ -16,16 +15,12 @@ kibana:
     - ES_PORT=9557
   ports:
     - '8090:80'
-  tags:
-    - digitalocean
 react:
   image: 'tutum.co/iteamdev/devsum-react:latest'
-  autoredeploy: true
   ports:
     - '80:80'
 worker:
   image: 'tutum.co/iteamdev/devsum-twitter-worker:latest'
-  autoredeploy: true
   environment:
     - 'api__url=http://faceproxy:5004/face'
     - 'elasticsearch__host=http://elasticsearch:9200'
